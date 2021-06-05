@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  web:
+    image: practica
+    build:
+      context: .
+    command: uvicorn app.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    volumes:
+      - ./:/usr/src/app/
+    ports:
+      - 8081:8000
+      - 10008:10008
+    env_file:
+      - .env
+    networks:
+      - "gazelle"
+
+  ngnix-server:
+    image: nginx:1.13
+    ports:
+      - "8080:80"
+    volumes:
+      - "./ngnix.conf:/etc/ngnix/nginx.conf"
+    networks:
+      - "gazelle"
+    depends_on:
+      - web
+
+networks:
+  gazelle:
+    external: true
