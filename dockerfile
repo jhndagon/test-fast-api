@@ -3,7 +3,6 @@ ARG BASE_IMAGE=python:3.8.3-slim-buster
 
 FROM ${BASE_IMAGE} AS requirements-image
 
-
 # set working directory
 WORKDIR /usr/src/app
 
@@ -21,7 +20,7 @@ RUN apt-get update \
 RUN pip install --upgrade pip
 RUN pip install pipenv pytest
 COPY Pipfile* ./
-RUN pipenv lock -r > requirements.txt
+RUN pipenv lock -r --dev > requirements.txt
 
 # add app
 FROM ${BASE_IMAGE} AS compile-image
@@ -50,8 +49,7 @@ RUN python3 -m venv /home/venv
 ENV PATH="/home/venv/bin:$PATH"
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 \
     && update-alternatives --install /usr/local/bin/pip pip /usr/local/bin/pip3 1
-# install python dependencies
-# COPY . .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 
@@ -59,12 +57,8 @@ FROM ${BASE_IMAGE} AS runtime-image
 ENV PYTHONUNBUFFERED TRUE
 COPY --from=compile-image /home/venv /home/venv
 ENV PATH="/home/venv/bin:$PATH"
-# RUN useradd -m dev \
-#  && mkdir -p /home/dev/tmp
-# RUN chown -R dev /home/venv
+
 WORKDIR /usr/src/app
 
 EXPOSE 80
-# USER dev
-# WORKDIR /home/dev
 COPY . .
