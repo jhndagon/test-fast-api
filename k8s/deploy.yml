@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-fast-api
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fast-api-test
+  template:
+    metadata:
+      labels:
+        app: fast-api-test
+    spec:
+      containers:
+        - name: fast-api-test
+          imagePullPolicy: Always
+          image: jhndagon11/test
+          args:
+            [
+              "gunicorn",
+              "app.app:app",
+              "-w",
+              "1",
+              "-k",
+              "uvicorn.workers.UvicornWorker",
+              "-b",
+              "0.0.0.0:80",
+              "--access-logfile",
+              "-",
+              "--log-level",
+              "info",
+              "--timeout",
+              "3600",
+            ]
+          envFrom:
+            - configMapRef:
+                name: test-fast-api-config-map

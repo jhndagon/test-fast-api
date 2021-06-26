@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-fast-api-config-map
+  namespace: test
+data:
+  POSTGRES_URL_DEV: "sqlite://db.sqlite3"
