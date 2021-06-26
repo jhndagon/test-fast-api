@@ -5,6 +5,11 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
+@app.get("")
+async def hello():
+    return "hello world!"
+
+
 @app.on_event("startup")
 async def startup_event():
     # log.info("Starting up...")
