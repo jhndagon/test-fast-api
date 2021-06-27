@@ -7,7 +7,7 @@ app = FastAPI()
 
 @app.get("/api/test")
 async def hello():
-    return "hello world!"
+    return "hello world! 1234"
 
 
 @app.on_event("startup")
